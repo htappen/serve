@@ -67,7 +67,10 @@ class JSONEnvelope(BaseEnvelope):
         """
         Converts the output of the model back into compatible JSON
         """
-        output = [ b64encode(row).decode('utf8') if isinstance(row, (bytes, bytearray)) else row for row in output ]
+        output = [
+            {'b64': b64encode(row).decode('utf8') } if isinstance(row, (bytes, bytearray)) else row 
+            for row in output 
+        ]
         
         out_key = "explanations" if self._is_explain() else "predictions"
         response = {
