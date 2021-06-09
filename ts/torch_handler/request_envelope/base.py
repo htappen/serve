@@ -32,6 +32,13 @@ class BaseEnvelope(ABC):
 
         return results
 
+    def _is_explain(self):
+        if self.context and self.context.get_request_header(0, "explain"):
+            if self.context.get_request_header(0, "explain") == "True":
+                return True
+
+        return False
+
     @abstractmethod
     def parse_input(self, data):
         pass

@@ -4,7 +4,7 @@ https://www.tensorflow.org/tfx/serving/api_restmain()
 """
 import json
 from itertools import chain
-from base64 import b64decode
+from base64 import b64decode, b64encode
 
 from .base import BaseEnvelope
 
@@ -67,7 +67,11 @@ class JSONEnvelope(BaseEnvelope):
         """
         Converts the output of the model back into compatible JSON
         """
-        out_dict = {
-            'predictions': output
+        output = [ b64encode(row).decode('utf8') if isinstance(row, (bytes, bytearray)) else row for row in output ]
+        
+        out_key = "explanations" if self._is_explain() else "predictions"
+        response = {
+            out_key: output
         }
-        return json.dumps(out_dict)
+
+        return json.dumps(response)
